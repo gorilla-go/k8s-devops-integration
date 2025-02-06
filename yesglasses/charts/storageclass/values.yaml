@@ -1,7 +1,7 @@
 # nfs chart config
 nfs-subdir-external-provisioner:
   # enable nfs.
-  enable: false
+  enabled: false
 
   replicaCount: 1
   strategyType: Recreate

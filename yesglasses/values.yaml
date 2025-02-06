@@ -9,7 +9,7 @@ global:
     className: &ingressClassName nginx
   # prometheus config
   prometheus:
-    enable: &prometheusEnabled true
+    enable: &prometheusEnabled false
   # docker registry config
   dockerRegistry:
     enabled: &dockerRegistryEnabled true
@@ -95,10 +95,13 @@ apps:
 
 # storageclass config
 storageclass:
+  # enable local storageclass
+  enabled: true
+
   # nfs server csi provisioner config
   nfs-subdir-external-provisioner:
     # enable nfs server csi provisioner
-    enable: true
+    enabled: false
     # nfs server config
     nfs:
       server: 10.0.31.14
@@ -141,6 +144,9 @@ storageclass:
 
 # repository config
 repository:
+  # enable local repository
+  enabled: true
+
   # gitea config.
   git:
     # enable gitea
@@ -224,6 +230,9 @@ ingress:
 
 # sites-provider config
 sites-provider:
+  # enable local sites-provider
+  enabled: true
+
   # sites program collection pvc.
   pvc:
     name: *sitesProviderName
@@ -244,9 +253,13 @@ sites-provider:
 
 # elasticsearch config
 elasticsearch:
+  # enable local elasticsearch
+  enabled: &elasticsearchEnabled false
+
+  # elasticsearch sub chart config
   elasticsearch:
     # enable elasticsearch
-    enabled: true
+    enabled: *elasticsearchEnabled
     # elasticsearch replicas
     replicas: 1
 
@@ -256,6 +269,10 @@ log-collector:
 
 # mysql innodb cluster config
 mysql:
+  # enable local mysql
+  enabled: false
+
+  # mysql innodb cluster config
   mysql-innodbcluster:
     enabled: true
     metrics:
@@ -269,6 +286,8 @@ mysql:
 
 # prometheus config
 prometheus:
+  # enable local prometheus
+  enabled: *prometheusEnabled
   # prometheus-stack config
   kube-prometheus-stack:
     # enable prometheus-stack

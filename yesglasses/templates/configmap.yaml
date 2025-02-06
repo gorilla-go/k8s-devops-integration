@@ -1,0 +1,10 @@
+{{ $projectName := include "projectName" . }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ $projectName }}-global-cm
+  namespace: {{ .Release.Namespace }}
+  labels:
+    com.{{ $projectName }}.configmap: {{ $projectName }}-global-cm
+data:
+  ENV_PRODUCTION: {{ .Values.global.mode }}

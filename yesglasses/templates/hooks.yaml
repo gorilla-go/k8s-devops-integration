@@ -1,0 +1,41 @@
+{{ $projectName := include "projectName" . }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $projectName }}-pre-upgrade-hook
+  namespace: {{ .Release.Namespace }}
+  labels:
+    com.{{ $projectName }}.hook: {{ $projectName }}-pre-upgrade-hook
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: {{ $projectName }}-pre-upgrade-hook
+      namespace: {{ .Release.Namespace }}
+      labels:
+        com.{{ $projectName }}.hook: {{ $projectName }}-pre-upgrade-hook
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: pre-upgrade-hook
+          image: "alpine:3.3"
+          env:
+            - name: ENV_PRODUCTION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $projectName }}-global-cm
+                  key: ENV_PRODUCTION
+            - name: ENV_PRODUCTION_UPGRADE
+              value: {{ .Values.global.mode | quote }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              if [ "$ENV_PRODUCTION" != "$ENV_PRODUCTION_UPGRADE" ]; then
+                exit 1;
+              fi
+              exit 0;

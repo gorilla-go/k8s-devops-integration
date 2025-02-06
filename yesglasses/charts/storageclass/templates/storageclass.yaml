@@ -1,3 +1,45 @@
-{{ include "storageclass" . }}
----
+{{- $projectName := include "projectName" . }}
+{{- if eq .Values.global.mode "production" }}
+{{- else }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-ebs
+  labels:
+    com.{{ $projectName }}.storageclass: aws-ebs
+provisioner: k8s.io/minikube-hostpath
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
 
+---
+{{- $nfsServerEnabled := get .Values "nfs-subdir-external-provisioner.enabled" -}}
+{{- $provisioner := "k8s.io/minikube-hostpath" -}}
+{{- if $nfsServerEnabled -}}
+{{- $provisioner := get .Values "nfs-subdir-external-provisioner.provisionerName" -}}
+{{- end }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-s3
+  labels:
+    com.{{ $projectName }}.storageclass: aws-s3
+provisioner: {{ $provisioner }}
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+reclaimPolicy: Retain
+
+{{- if not $nfsServerEnabled }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-efs
+  labels:
+    com.{{ $projectName }}.storageclass: aws-efs
+provisioner: {{ $provisioner }}
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+reclaimPolicy: Retain
+{{- end -}}
+{{- end }}

@@ -22,3 +22,51 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
+
+dependencies:
+  # local elasticsearch
+  - name: elasticsearch
+    repository: "file://charts/elasticsearch"
+    version: 0.1.0
+    condition: elasticsearch.enabled
+
+  # local ingress nginx gateway
+  - name: ingress
+    repository: "file://charts/ingress"
+    version: 0.1.0
+
+  # local log collector
+  - name: log-collector
+    repository: "file://charts/log-collector"
+    version: 0.1.0
+    condition: log-collector.enabled
+
+  # local mysql cluster
+  - name: mysql
+    repository: "file://charts/mysql"
+    version: 0.1.0
+    condition: mysql.enabled
+
+  # local prometheus
+  - name: prometheus
+    repository: "file://charts/prometheus"
+    version: 0.1.0
+    condition: prometheus.enabled
+
+  # local repository
+  - name: repository
+    repository: "file://charts/repository"
+    version: 0.1.0
+    condition: repository.enabled
+
+  # local sites provider
+  - name: sites-provider
+    repository: "file://charts/sites-provider"
+    version: 0.1.0
+    condition: sites-provider.enabled
+
+  # local storageclass
+  - name: storageclass
+    repository: "file://charts/storageclass"
+    version: 0.1.0
+    condition: storageclass.enabled
